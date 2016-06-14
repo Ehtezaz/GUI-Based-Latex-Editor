@@ -145,9 +145,9 @@ public class EditorFrame extends JFrame{
 	JLabel label = new JLabel( new ImageIcon("Icon/banner.png"));
 	subSubPanel.add(label,BorderLayout.CENTER);
 	
-	defaultFont = new Font(fontStyle, fontName,  fontSize);
+	/*defaultFont = new Font(fontStyle, fontName,  fontSize);
 	field.setFont(defaultFont);
-	
+	*/
 	field = new JTextArea();
 	field.setLineWrap(true);
 	field.setWrapStyleWord(true);
