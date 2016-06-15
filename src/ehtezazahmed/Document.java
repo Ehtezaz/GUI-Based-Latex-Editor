@@ -27,7 +27,8 @@ import javax.swing.JTextArea;
  */
 public class Document extends JFrame {
 	
-	File currentFile;	 
+	File currentFile;
+	File sourceFile;
 	JFileChooser fileSelect;
 ////////////////////////////////////////////////////////////
 	public Document() {
@@ -42,6 +43,7 @@ public class Document extends JFrame {
 			ef.setTitle("EZ's Text Editor - " + "New Document");
 			status.setText("New file created..");
 			currentFile = null;
+			
 		}
 	}
 
@@ -85,6 +87,12 @@ public void openDocument( JLabel status,JFrame ef,JTextArea field) {
 				 status.setText("File saved..");
 	}
 
+////////////////////////////////////////EXIT FILE /////////////////////////////////////////////////////////////
+
+	public void generatePDF(){
+	new GeneratePDF(); 
+	}
+	
 ///////////////////////////////////////// EXIT FILE /////////////////////////////////////////////////////////////
 
 	public void exitDocument(JLabel status,JFrame ef,JTextArea field) {

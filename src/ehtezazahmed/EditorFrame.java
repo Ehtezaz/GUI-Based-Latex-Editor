@@ -1,6 +1,7 @@
 package ehtezazahmed;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -80,46 +81,49 @@ public class EditorFrame extends JFrame{
 	JToolBar toolBar1;
 	
 	
-	JButton newFileButton;
-	JButton openFileButton;
-	JButton saveFileButton;
-	JButton saveAsFileButton;
-	JButton generatePDFFileButton;
+	ExtendedButton newFileButton;
+	ExtendedButton openFileButton;
+	ExtendedButton saveFileButton;
+	ExtendedButton saveAsFileButton;
+	ExtendedButton generatePDFFileButton;
 	
-	JButton undoButton;
-	JButton redoButton;
+	ExtendedButton undoButton;
+	ExtendedButton redoButton;
 	
-	JButton cutTextButton;
-	JButton copyTextButton;
-	JButton pasteTextButton;
+	ExtendedButton cutTextButton;
+	ExtendedButton copyTextButton;
+	ExtendedButton pasteTextButton;
 	
-	JButton boldButton;
-	JButton italicButton;
-	JButton underlineButton;
+	ExtendedButton boldButton;
+	ExtendedButton italicButton;
+	ExtendedButton underlineButton;
 	
-	JButton sectionButton;
-	JButton subSetionButton;
-	JButton paragraphButton;
-	
-	
-	JToolBar toolBar2;
-	JComboBox textSize;
-	JComboBox textStyle;
-	
-	JButton spellCheckButton;
-	JButton grammarCheckButton;
+	ExtendedButton sectionButton;
+	ExtendedButton subSetionButton;
+	ExtendedButton paragraphButton;
 	
 	
+	private JToolBar toolBar2;
 	
-	public JTextArea field;
-	public JScrollPane scroller;
+	private JComboBox textSize;
+	private JComboBox textStyle;
 	
-	public String fontStyle = "Arail";
-	public int fontName = Font.PLAIN;
-	public int fontSize = 14;	
-	public Font defaultFont;
+	ExtendedButton spellCheckButton;
+	ExtendedButton grammarCheckButton;
 	
-	public JLabel status;
+	private JTextArea sourceArea;
+	private JScrollPane sourceScroller;
+	
+	
+	private JTextArea field;
+	private JScrollPane scroller;
+	
+	private String fontStyle;
+	private int fontName;
+	private int fontSize;	
+	private Font defaultFont;
+	
+	public static JLabel status;
 	
 //////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////CONSTRUCTOR STARTS////////////////////////////////////	
@@ -128,12 +132,22 @@ public class EditorFrame extends JFrame{
 		
 	mainPanel = new JPanel();
 	mainPanel.setLayout(new BorderLayout());
+	add(mainPanel);
 	
 	createMenu();
 	
 	subPanel = new JPanel();
-	add(subPanel, BorderLayout.CENTER);
+	mainPanel.add(subPanel, BorderLayout.CENTER);
 	subPanel.setLayout(new BorderLayout());
+	sourceArea = new JTextArea();
+	sourceArea.setLineWrap(true);
+	sourceArea.setWrapStyleWord(true);
+	
+	sourceArea.setAutoscrolls(true);
+	//sourceArea.setEditable(false);
+	//sourceArea.setMaximumSize(new Dimension(100,40));
+	sourceScroller = new JScrollPane(sourceArea);
+	subPanel.add(sourceScroller, BorderLayout.SOUTH);
 	
 	createToolBar1();
 
@@ -145,12 +159,14 @@ public class EditorFrame extends JFrame{
 	JLabel label = new JLabel( new ImageIcon("Icon/banner.png"));
 	subSubPanel.add(label,BorderLayout.CENTER);
 	
-	/*defaultFont = new Font(fontStyle, fontName,  fontSize);
-	field.setFont(defaultFont);
-	*/
+	
+	
 	field = new JTextArea();
 	field.setLineWrap(true);
 	field.setWrapStyleWord(true);
+	
+	defaultFont = new Font("Arial", Font.PLAIN, 12);
+	field.setFont(defaultFont);
 	
 	scroller = new JScrollPane(field);
 	subSubPanel.add(scroller, BorderLayout.CENTER);
@@ -229,6 +245,7 @@ public class EditorFrame extends JFrame{
 				doc.newDocument(subSubPanel, status, EditorFrame.this, field);	
 			}
 		});
+		
 	
 		openFileButton.addActionListener(new ActionListener() {	
 			@Override
@@ -253,7 +270,14 @@ public class EditorFrame extends JFrame{
 			}
 		});
 		
-		
+		generatePDFFileButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				doc.generatePDF();
+			}
+		});
 		
 /////////////////////////////File Ends///////////////////////////////////////
 
@@ -339,9 +363,26 @@ public class EditorFrame extends JFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-//				text.boldText(field, status);
+				field.setFont(new Font(fontStyle, Font.BOLD, 12));
+				//text.boldText(field, status, defaultFont);
 			}
 		});
+		
+		italicButton.addActionListener(new ActionListener() {
+	
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				text.italicText(field, status, defaultFont);
+			}
+		});
+
+	/*	underlineButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				text.underlineText(field, status);
+			}
+		});*/
 		
 		
 ////////////////////////////bOLD iTALIC uNDERLINE stART//////////////////////////////////////		
@@ -364,18 +405,28 @@ public class EditorFrame extends JFrame{
 		
 		String size[] = { "8", "9", "10", "11", "12"};
 		textSize = new JComboBox(size);
+		textSize.setMaximumSize( textSize.getPreferredSize() ); 
 		toolBar2.add(textSize);
 		
 		toolBar2.addSeparator();
 		
 		String style[] = { "Arial", "Calibri", "Times New Roman", "Serif", "San-Sarif"};
 		textStyle = new JComboBox(style);
+		textStyle.setMaximumSize( textStyle.getPreferredSize() );	
 		toolBar2.add(textStyle);
 		toolBar2.addSeparator();
 		
-		spellCheckButton = new JButton();
+		sectionButton = new ExtendedButton("Section..");
+		sectionButton.setIcon(new ImageIcon("Icon/spellcheck.png"));
+		subSetionButton = new ExtendedButton("Subsection..");
+		subSetionButton.setIcon(new ImageIcon("Icon/grammar.png"));
+		paragraphButton = new ExtendedButton("Paragraph..");
+		paragraphButton.setIcon(new ImageIcon("Icon/grammar.png"));
+		toolBar2.addSeparator();
+		
+		spellCheckButton = new ExtendedButton("Spell Check");
 		spellCheckButton.setIcon(new ImageIcon("Icon/spellcheck.png"));
-		grammarCheckButton = new JButton();
+		grammarCheckButton = new ExtendedButton("Grammar Check");
 		grammarCheckButton.setIcon(new ImageIcon("Icon/grammar.png"));
 		
 		toolBar2.add(spellCheckButton);
@@ -393,15 +444,15 @@ public class EditorFrame extends JFrame{
 		toolBar1 = new JToolBar();
 		subPanel.add(toolBar1, BorderLayout.NORTH);
 		
-		newFileButton = new JButton();
+		newFileButton = new ExtendedButton("New Document");
 		newFileButton.setIcon(new ImageIcon("Icon/new.png"));
-		openFileButton = new JButton();
+		openFileButton = new ExtendedButton("Open File");
 		openFileButton.setIcon(new ImageIcon("Icon/file-open.png"));
-		saveFileButton = new JButton();
+		saveFileButton = new ExtendedButton("Save File");
 		saveFileButton.setIcon(new ImageIcon("Icon/save.png"));
-		saveAsFileButton = new JButton();
+		saveAsFileButton = new ExtendedButton("Save As");
 		saveAsFileButton.setIcon(new ImageIcon("Icon/save.png"));
-		generatePDFFileButton = new JButton();
+		generatePDFFileButton = new ExtendedButton("Generate PDF");
 		generatePDFFileButton.setIcon(new ImageIcon("Icon/pdf.png"));
 			
 		toolBar1.add(newFileButton);
@@ -412,11 +463,11 @@ public class EditorFrame extends JFrame{
 		
 		toolBar1.addSeparator();
 	
-		cutTextButton = new JButton();
+		cutTextButton = new ExtendedButton("Cut Button");
 		cutTextButton.setIcon(new ImageIcon("Icon/cut.png"));
-		copyTextButton = new JButton();
+		copyTextButton = new ExtendedButton("Copy..");
 		copyTextButton.setIcon(new ImageIcon("Icon/copy.png"));
-		pasteTextButton = new JButton();
+		pasteTextButton = new ExtendedButton("Paste..");
 		pasteTextButton.setIcon(new ImageIcon("Icon/paste.png"));
 		
 		toolBar1.add(cutTextButton);
@@ -425,11 +476,11 @@ public class EditorFrame extends JFrame{
 		
 		toolBar1.addSeparator();
 		
-		boldButton = new JButton();
+		boldButton = new ExtendedButton("Bold");
 		boldButton.setIcon(new ImageIcon("Icon/bold.png"));
-		italicButton = new JButton();
+		italicButton = new ExtendedButton("Italic");
 		italicButton.setIcon(new ImageIcon("Icon/italic.png"));
-		underlineButton = new JButton();
+		underlineButton = new ExtendedButton("Underline");
 		underlineButton.setIcon(new ImageIcon("Icon/underline.png"));
 		
 		toolBar1.add(boldButton);
@@ -515,8 +566,8 @@ public class EditorFrame extends JFrame{
 			menuBar.add(tools);
 			menuBar.add(help);
 			add(menuBar, BorderLayout.NORTH);
-		
+			
 		/////////////////////////////////////MENU BAR END/////////////////////////////////////////
 	}
-	
+
 }////////////////////////////////////////////////END/////////////////////////////////////////////
