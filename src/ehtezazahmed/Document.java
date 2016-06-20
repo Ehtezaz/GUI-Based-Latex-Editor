@@ -19,6 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextPane;
 
 /**
  * 
@@ -36,11 +37,11 @@ public class Document extends JFrame {
 	}
 ////////////////////////////////////// NEW FILE /////////////////////////////////////////////////////////////////	
 	
-	public void newDocument(JPanel p,JLabel status,JFrame ef,JTextArea field) {
+	public void newDocument(JPanel p,JLabel status,JFrame ef,JTextPane field) {
 		if(JOptionPane.showConfirmDialog(null, "Are you sure to create new file..") == 0){
 			
 			field.setText(" ");
-			ef.setTitle("EZ's Text Editor - " + "New Document");
+			ef.setTitle("EZ's Text Editor - " + "\tNew Document");
 			status.setText("New file created..");
 			currentFile = null;
 			
@@ -49,7 +50,7 @@ public class Document extends JFrame {
 
 /////////////////////////////////////// OPEN FILE ////////////////////////////////////////////////////////////////	
 	
-public void openDocument( JLabel status,JFrame ef,JTextArea field) {
+public void openDocument( JLabel status,JFrame ef,JTextPane field) {
 		if(JOptionPane.showConfirmDialog(null, "Are you sure to close current file..") == 0){
 			
 			int openResult = fileSelect.showOpenDialog(null);
@@ -63,7 +64,7 @@ public void openDocument( JLabel status,JFrame ef,JTextArea field) {
 	 
 //////////////////////////////////////// SAVE FILE ///////////////////////////////////////////////////////////////	
 
-	public void saveDocument(JLabel status,JFrame ef,JTextArea field){
+	public void saveDocument(JLabel status,JFrame ef,JTextPane field){
 		
 		if(currentFile == null){
 			int saveResult = fileSelect.showSaveDialog(null);
@@ -80,14 +81,14 @@ public void openDocument( JLabel status,JFrame ef,JTextArea field) {
 
 ///////////////////////////////////////// SAVE AS FILE ///////////////////////////////////////////////////////////	
 	
-	public void saveAsDocument(JLabel status,JFrame ef,JTextArea field) 		 {
+	public void saveAsDocument(JLabel status,JFrame ef,JTextPane field) 		 {
 		
 			int saveResult = fileSelect.showSaveDialog(null);
 				onSaveFile(fileSelect.getSelectedFile(), field.getText(), status, ef, field); 
 				 status.setText("File saved..");
 	}
 
-////////////////////////////////////////EXIT FILE /////////////////////////////////////////////////////////////
+////////////////////////////////////////PDF FILE /////////////////////////////////////////////////////////////
 
 	public void generatePDF(){
 	new GeneratePDF(); 
@@ -95,7 +96,7 @@ public void openDocument( JLabel status,JFrame ef,JTextArea field) {
 	
 ///////////////////////////////////////// EXIT FILE /////////////////////////////////////////////////////////////
 
-	public void exitDocument(JLabel status,JFrame ef,JTextArea field) {
+	public void exitDocument(JLabel status,JFrame ef,JTextPane field) {
 		System.exit(0);
 	}
 	
@@ -103,7 +104,7 @@ public void openDocument( JLabel status,JFrame ef,JTextArea field) {
 
 ///////////////////////////////////onOpenFile///////////////////////////////////////////////////////////////////
 
-	public void onOpenFile(File file, JLabel status,JFrame ef,JTextArea field){
+	public void onOpenFile(File file, JLabel status,JFrame ef,JTextPane field){
 		//outer if-else starts..		
 		if(file.canRead()){
 			String filePath = file.getPath();
@@ -135,9 +136,39 @@ public void openDocument( JLabel status,JFrame ef,JTextArea field) {
 		
 	}
 	
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	public void createTEX(JTextArea sourceArea, JLabel status){
+		
+	 if(currentFile != null){
+		BufferedWriter writer = null;
+		String filePath = currentFile.getPath();
+		if(!filePath.endsWith(".txt")){
+			filePath += ".tex";
+		}
+		
+		try{
+			writer = new BufferedWriter(new FileWriter(filePath));
+			writer.write(sourceArea.getText());
+			writer.close();
+			sourceArea.setText(sourceArea.getText());
+			//ef.setTitle("EZ's Text Editor - " + filePath);
+			//currentFile = file;
+			status.setText("TEX FIle generated..");
+		}
+		
+		catch(Exception e){
+			JOptionPane.showMessageDialog(null, "Exception: "+ e);
+		}
+	 }
+				 //sourceArea.setText("File saved..");		
+	}
+///////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	
 ////////////////////////////////////////onSaveFile///////////////////////////////////////////////////////////////	
 	
-	public void onSaveFile(File file, String contents, JLabel status,JFrame ef,JTextArea field) {
+	public void onSaveFile(File file, String contents, JLabel status,JFrame ef,JTextPane field) {
 		BufferedWriter writer = null;
 		String filePath = file.getPath();
 		if(!filePath.endsWith(".txt")){
@@ -171,5 +202,4 @@ public void openDocument( JLabel status,JFrame ef,JTextArea field) {
 	}	
 	
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
-	
 }

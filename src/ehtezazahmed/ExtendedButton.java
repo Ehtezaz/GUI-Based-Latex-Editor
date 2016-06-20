@@ -11,7 +11,7 @@ public class ExtendedButton extends JButton{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	//private static final long serialVersionUID = 1L;
 
 	public ExtendedButton(String text){
 		this.addMouseListener(new MouseListener() {
